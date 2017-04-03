@@ -9,8 +9,10 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('python')
 options.register('output','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 options.register('input','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
-#options.register('jobnum','',VarParsing.multiplicity.singleton,VarParsing.varType.int,"type parameter")
-#options.register('totaljobs','',VarParsing.multiplicity.singleton,VarParsing.varType.int,"type parameter")
+options.register('events','',VarParsing.multiplicity.singleton,VarParsing.varType.int,"type parameter")
+options.register('offset','',VarParsing.multiplicity.singleton,VarParsing.varType.int,"type parameter")
+options.register('seed','',VarParsing.multiplicity.singleton,VarParsing.varType.int,"type parameter")
+options.register('mass','',VarParsing.multiplicity.singleton,VarParsing.varType.float,"type parameter")
 
 options.parseArguments()
 #outputfilename = "file:%s_%s.root"%(options.output.replace(".root",""),options.jobnum)
@@ -21,8 +23,6 @@ process = cms.Process('SIM')
 #with open("slha.slha","r") as slhafile:
 #    SLHA="".join(slhafile.readlines())
 
-maxEvents=1000
-#skipEvents=maxEvents*(options.jobnum)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -30,38 +30,33 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryExtended2015Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2015_cff')
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+process.load('Configuration.Geometry.GeometrySimDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('Configuration.StandardSequences.Generator_cff')
-process.load('IOMC.EventVertexGenerators.VtxSmearedRealistic8TeVCollision_cfi')
+process.load('IOMC.EventVertexGenerators.VtxSmearedRealistic50ns13TeVCollision_cfi')
 process.load('GeneratorInterface.Core.genFilterSummary_cff')
 process.load('Configuration.StandardSequences.SimIdeal_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
-#process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(maxEvents)
+    input = cms.untracked.int32(options.events)
 )
 
-# Input source
-#print options.totaljobs
-#print options.jobnum
-#print maxEvents
-#print skipEvents
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring([inputfilename]),
-                             #skipEvents = cms.untracked.uint32(skipEvents)
-                             # firstEvent = cms.untracked.uint32(skipEvents+1)
+                             skipEvents = cms.untracked.uint32(options.offset)
 )
-
 
 
 process.options = cms.untracked.PSet(
 
 )
 
-process.RandomNumberGeneratorService.generator.initialSeed = 12345
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
+
+process.RandomNumberGeneratorService.generator.initialSeed = options.seed
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
@@ -73,7 +68,6 @@ process.configurationMetadata = cms.untracked.PSet(
 process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0),
     eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
-    # outputCommands = cms.untracked.vstring('drop *', 'keep *_source_*_*', 'keep *_generator_*_*', 'keep *_genMetTrue_*_*', 'keep *_genParticles_*_*','keep *_ak5GenJets_*_*'),
     outputCommands = process.RAWSIMEventContent.outputCommands,
     fileName = cms.untracked.string(outputfilename),
     dataset = cms.untracked.PSet(
@@ -89,8 +83,8 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
 
 # Other statements
 process.genstepfilter.triggerConditions=cms.vstring("generation_step")
-#from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_71_V1::All', '')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_71_V1::All', '')
 
 from Configuration.Generator.Pythia8CommonSettings_cfi import *
 from Configuration.Generator.Pythia8CUEP8M1Settings_cfi import *
@@ -111,7 +105,7 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
         'Higgs:useBSM = on',
         '35:onMode = off', # turn OFF all H decays
         '35:onIfAny = 15',    # turn ON H->tautau
-        '35:m0 = 500.0'
+        '35:m0 = %g' % options.mass
         ),
       parameterSets = cms.vstring('pythia8CommonSettings',
         'pythia8CUEP8M1Settings',
@@ -121,6 +115,7 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
       )
     )
 
+#print process.generator.PythiaParameters.processParameters
 
 # Path and EndPath definitions
 process.generation_step = cms.Path(process.pgen)
@@ -130,28 +125,7 @@ process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RAWSIMoutput_step = cms.EndPath(process.RAWSIMoutput)
 
 
-#process.RAWSIMoutput.outputCommands.append('keep *_*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*TriggerResults*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*ak4*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*ak8*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*iterativeCone*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*kt4*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*kt6*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*genMetCalo*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*generator*_*_*')
-process.RAWSIMoutput.outputCommands.append('keep GenEventInfoProduct_*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *_*randomEngineStateProducer*_*_*')
-process.RAWSIMoutput.outputCommands.append('drop *int*_*_*_*')
-
-#process.RAWSIMoutput.outputCommands.append('drop *Track*_*_*_*')
-#process.RAWSIMoutput.outputCommands.append('drop *_kt4*_*_*')
-#process.RAWSIMoutput.outputCommands.append('drop *_kt6*_*_*')
-#process.RAWSIMoutput.outputCommands.append('drop *_muons_*_*')
-
-
 # Schedule definition
-#process.schedule = cms.Schedule(process.generation_step,process.genfiltersummary_step,process.simulation_step,process.endjob_step,process.RAWSIMoutput_step)
-
 process.schedule = cms.Schedule(process.generation_step,process.genfiltersummary_step,process.endjob_step,process.RAWSIMoutput_step)
 
 

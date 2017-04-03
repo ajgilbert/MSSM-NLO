@@ -37,6 +37,8 @@ process.options = cms.untracked.PSet(
 
 )
 
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
+
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
     version = cms.untracked.string('$Revision: 1.19 $'),
