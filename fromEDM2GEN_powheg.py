@@ -9,6 +9,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('python')
 options.register('output','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 options.register('input','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+options.register('higgs','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 options.register('events','',VarParsing.multiplicity.singleton,VarParsing.varType.int,"type parameter")
 options.register('offset','',VarParsing.multiplicity.singleton,VarParsing.varType.int,"type parameter")
 options.register('seed','',VarParsing.multiplicity.singleton,VarParsing.varType.int,"type parameter")
@@ -103,9 +104,9 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
       processParameters = cms.vstring(
         'POWHEG:nFinal = 1',
         'Higgs:useBSM = on',
-        '35:onMode = off', # turn OFF all H decays
-        '35:onIfAny = 15',    # turn ON H->tautau
-        '35:m0 = %g' % options.mass
+        '%s:onMode = off' % options.higgs, # turn OFF all H decays
+        '%s:onIfAny = 15' % options.higgs,    # turn ON H->tautau
+        '%s:m0 = %g' % (options.higgs, options.mass)
         ),
       parameterSets = cms.vstring('pythia8CommonSettings',
         'pythia8CUEP8M1Settings',

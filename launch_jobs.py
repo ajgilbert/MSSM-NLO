@@ -2,6 +2,7 @@ from UserCode.ICHiggsTauTau.jobs import Jobs
 import argparse
 import os
 import ROOT
+import json
 from math import ceil
 from array import array
 
@@ -15,7 +16,7 @@ parser.add_argument('-m', '--mass', default='500')
 parser.add_argument('-t', '--tanb', default='15')
 parser.add_argument('-c', '--contribution', default='t:t')
 parser.add_argument('-H', '--higgs', default='H', choices=['H', 'A'])
-parser.add_argument('--step', default='none', choices=['none', 'lhe', 'gen', 'ntuple'])
+parser.add_argument('--step', default='none', choices=['none', 'lhe', 'gen', 'ntuple', 'xsec'])
 parser.add_argument('--upload', default=None)
 parser.add_argument('--download', default=None)
 parser.add_argument('--usetmp', action='store_true')
@@ -50,7 +51,7 @@ gr['t'] = ROOT.TGraph(len(mass), array('d', mass), array('d', qt))
 gr['b'] = ROOT.TGraph(len(mass), array('d', mass), array('d', qb))
 gr['tb'] = ROOT.TGraph(len(mass), array('d', mass), array('d', qtb))
 
-if args.step == 'lhe':
+if args.step in ['lhe', 'xsec']:
 
     with open('powheg.input') as pwhg_file:
         pwhg_cfg = pwhg_file.read()
@@ -67,33 +68,55 @@ if args.step == 'lhe':
 
         key = '%s_%s_%s_%s_%s' % (args.higgs, args.mass, args.tanb, cont, scale)
         
-        cfg = pwhg_cfg
-        cfg = cfg.replace('{HFACT}', str(int(round(gr[scale].Eval(float(args.mass))))))
-        if cont == 't':
-            cfg += 'nobot 1\n'
-        if cont == 'b':
-            cfg += 'notop 1\n'
-    
+        if args.step == 'lhe':
+            cfg = pwhg_cfg
+            cfg = cfg.replace('{HFACT}', str(int(round(gr[scale].Eval(float(args.mass))))))
+            if cont == 't':
+                cfg += 'nobot 1\n'
+            if cont == 'b':
+                cfg += 'notop 1\n'
+        
 
-        #if os.path.isdir(key):
-        #  print 'Error, directory %s already exists!' % key
-        #  sys.exit(1)
+            #if os.path.isdir(key):
+            #  print 'Error, directory %s already exists!' % key
+            #  sys.exit(1)
 
-        os.system('mkdir -p %s' % key)
+            os.system('mkdir -p %s' % key)
 
-        with open(os.path.join(key,'powheg.input'), "w") as outfile:
-            outfile.write(cfg)
+            with open(os.path.join(key,'powheg.input'), "w") as outfile:
+                outfile.write(cfg)
 
-        cmd = base_cmd
-        cmd += '; pushd %s; %s/pwhg_main powheg.input' % (key, args.pwhg_dir)
-        cmd += '; popd; cmsRun fromLHE2EDM.py input=%s/pwgevents.lhe output=%s/lhe_events.root' % (key, key)
-        job_mgr.job_queue.append(cmd)
+            cmd = base_cmd
+            cmd += '; pushd %s; %s/pwhg_main powheg.input' % (key, args.pwhg_dir)
+            cmd += '; popd; cmsRun fromLHE2EDM.py input=%s/pwgevents.lhe output=%s/lhe_events.root' % (key, key)
+            job_mgr.job_queue.append(cmd)
+        
+        if args.step == 'xsec':
+            js = {}
+            if os.path.isfile('xsec.json'):
+                with open('xsec.json') as jsonfile:
+                    js = json.load(jsonfile)
+            with open('%s/pwg-stat.dat' % key) as xsec_file:
+                for line in xsec_file:
+                    splitline = line.split()
+                    if splitline[0] == 'total':
+                        xsec = float(splitline[-3])
+                        err = float(splitline[-1])
+                        print '%s: %.3f +/- %.5f' % (key, xsec, err)
+                        js[key] = [xsec, err]
+            with open('xsec.json', 'w') as outfile:
+                json.dump(js, outfile, sort_keys=True, indent=4, separators=(',', ': '))
+
 
     job_mgr.flush_queue()
 
 blocks = int(ceil(float(args.nevents) / float(args.split)))
 
 if args.step in ['gen', 'ntuple']:
+    higgs_pdg = {
+            'H': '35',
+            'A': '36'
+            }
     for task in args.contribution.split(','):
         cont, scale = task.split(':')
         key = '%s_%s_%s_%s_%s' % (args.higgs, args.mass, args.tanb, cont, scale)
@@ -103,7 +126,7 @@ if args.step in ['gen', 'ntuple']:
             if args.step == 'gen':
                 if args.usetmp:
                     outdir = '$TMPDIR'
-                cmd = 'cmsRun fromEDM2GEN_powheg.py input=%s/lhe_events.root output=%s/gen_events_%i.root seed=%i events=%i offset=%i mass=%f' % (key, outdir, b, b, args.split, args.split*b, float(args.mass))
+                cmd = 'cmsRun fromEDM2GEN_powheg.py input=%s/lhe_events.root output=%s/gen_events_%i.root seed=%i events=%i offset=%i mass=%f higgs=%s' % (key, outdir, b, b, args.split, args.split*b, float(args.mass), higgs_pdg[args.higgs])
                 if args.upload is not None:
                     cmd += '; gfal-copy file://%s/gen_events_%i.root %s/%s/gen_events_%i.root' % (outdir, b, args.upload, key, b)
                     cmd += '; rm %s/gen_events_%i.root' % (outdir, b)
