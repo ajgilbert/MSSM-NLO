@@ -27,3 +27,9 @@
 *.exe
 *.out
 *.app
+
+*.root
+*.pyc
+*.pcm
+*.d
+mhmodp*.txt
