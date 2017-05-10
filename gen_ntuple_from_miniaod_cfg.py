@@ -18,14 +18,14 @@ process.TFileService = cms.Service("TFileService",
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(10000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 500
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToHToTauTau_M-3200_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/AA17AD85-2FCB-E611-8D11-0CC47A4C8E1C.root'),
+    fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-80_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/1C1B2A76-D7D1-E611-9908-C45444922BD1.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -47,16 +47,38 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
     includeStatusFlags  = cms.bool(True)
     )
 
+from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
+process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
+        particles = cms.InputTag('prunedGenParticles', '', 'PAT') 
+        )
+
+from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
+process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
+        jets = cms.InputTag("slimmedGenJets") 
+        )
+
+process.MessageLogger.categories += cms.vstring('JetPtMismatch', 'MissingJetConstituent', 'JetPtMismatchAtLowPt')
+process.MessageLogger.cerr.JetPtMismatch = cms.untracked.PSet(limit = cms.untracked.int32(0))
+process.MessageLogger.cerr.MissingJetConstituent = cms.untracked.PSet(limit = cms.untracked.int32(0))
+process.MessageLogger.cerr.JetPtMismatchAtLowPt = cms.untracked.PSet(limit = cms.untracked.int32(0))
+
 process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
     src = cms.InputTag("slimmedGenJets"),
     cut = cms.string("pt > 10.0")
     )
+
+process.icGenJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
+        input       = cms.InputTag("slimmedGenJets"),
+        flavourMap  = cms.InputTag("genJetFlavourInfos")
+        )
 
 process.icGenJetProducer = producers.icGenJetProducer.clone(
     branch              = cms.string("genJets"),
     input               = cms.InputTag("selectedGenJets"),
     inputGenParticles   = cms.InputTag("genParticles"),
     requestGenParticles = cms.bool(False),
+    includeFlavourInfo  = cms.bool(True),
+    inputFlavourInfo    = cms.InputTag("icGenJetFlavourCalculator"),
     isSlimmed           = cms.bool(True)
     )
 
@@ -68,6 +90,9 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventProducer = producers.icEventProducer.clone()
 
 process.p = cms.Path(
+   process.selectedHadronsAndPartons+
+   process.genJetFlavourInfos+
+   process.icGenJetFlavourCalculator+
    process.icGenParticleProducer+
    process.selectedGenJets+
    process.icGenJetProducer+

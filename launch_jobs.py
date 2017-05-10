@@ -125,7 +125,7 @@ for pars in product(args.higgs.split(','), args.mass.split(','), args.tanb.split
                     outdir = '$TMPDIR'
                 cmd = 'cmsRun fromEDM2GEN_powheg.py input=%s/lhe_events.root output=%s/gen_events_%i.root seed=%i events=%i offset=%i mass=%f higgs=%s' % (key, outdir, b, b, args.split, args.split*b, float(MASS), higgs_pdg[HIGGS])
                 if args.upload is not None:
-                    cmd += '; gfal-copy file://%s/gen_events_%i.root %s/%s/gen_events_%i.root' % (outdir, b, args.upload, key, b)
+                    cmd += '; gfal-copy -f file://%s/gen_events_%i.root %s/%s/gen_events_%i.root' % (outdir, b, args.upload, key, b)
                     cmd += '; rm %s/gen_events_%i.root' % (outdir, b)
                 job_mgr.job_queue.append(cmd)
             if args.step == 'ntuple':

@@ -125,16 +125,38 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
     includeStatusFlags  = cms.bool(True)
     )
 
+from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
+process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
+        particles = cms.InputTag('prunedGenParticles', '', 'PAT') 
+        )
+
+from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
+process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
+        jets = cms.InputTag("ak4GenJetsNoNu") 
+        )
+
+process.MessageLogger.categories += cms.vstring('JetPtMismatch', 'MissingJetConstituent', 'JetPtMismatchAtLowPt')
+process.MessageLogger.cerr.JetPtMismatch = cms.untracked.PSet(limit = cms.untracked.int32(0))
+process.MessageLogger.cerr.MissingJetConstituent = cms.untracked.PSet(limit = cms.untracked.int32(0))
+process.MessageLogger.cerr.JetPtMismatchAtLowPt = cms.untracked.PSet(limit = cms.untracked.int32(0))
+
 process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
     src = cms.InputTag("ak4GenJetsNoNu"),
     cut = cms.string("pt > 10.0")
     )
+
+process.icGenJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
+        input       = cms.InputTag("ak4GenJetsNoNu"),
+        flavourMap  = cms.InputTag("genJetFlavourInfos")
+        )
 
 process.icGenJetProducer = producers.icGenJetProducer.clone(
     branch              = cms.string("genJets"),
     input               = cms.InputTag("selectedGenJets"),
     inputGenParticles   = cms.InputTag("genParticles"),
     requestGenParticles = cms.bool(False),
+    includeFlavourInfo  = cms.bool(True),
+    inputFlavourInfo    = cms.InputTag("icGenJetFlavourCalculator"),
     isSlimmed           = cms.bool(False)
     )
 
@@ -146,6 +168,9 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventProducer = producers.icEventProducer.clone()
 
 process.p = cms.Path(
+   process.selectedHadronsAndPartons+
+   process.genJetFlavourInfos+
+   process.icGenJetFlavourCalculator+
    process.icGenParticleProducer+
    process.selectedGenJets+
    process.icGenJetProducer+
