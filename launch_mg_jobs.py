@@ -3,6 +3,7 @@ import argparse
 import os
 import ROOT
 import json
+import subprocess
 from math import ceil
 from array import array
 from itertools import product
@@ -12,13 +13,12 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--mg-dir', default='./MG5_aMC_v2_3_0_beta')
 parser.add_argument('--base', default='./bbH_4FS_yb2')
-parser.add_argument('-n', '--nevents', default=10000, type=int)
+parser.add_argument('-n', '--nevents', default=500000, type=int)
+parser.add_argument('--mg-split', default=10000, type=int)
+parser.add_argument('--cores', default=8, type=int)
 parser.add_argument('--split', default=-1, type=int)
 parser.add_argument('-m', '--mass', default='500')
-#parser.add_argument('-t', '--tanb', default='15')
-#parser.add_argument('-c', '--contribution', default='t:t')
-#parser.add_argument('-H', '--higgs', default='H')
-parser.add_argument('--step', default='none', choices=['none', 'lhe', 'gen', 'ntuple', 'xsec'])
+parser.add_argument('--step', default='none', choices=['none', 'lhe', 'clean', 'gen', 'ntuple', 'xsec'])
 parser.add_argument('--upload', default=None)
 parser.add_argument('--download', default=None)
 parser.add_argument('--usetmp', action='store_true')
@@ -31,12 +31,11 @@ if args.split == -1:
     args.split = args.nevents
 
 
-
 for MASS in args.mass.split(','):
+    base_name = os.path.basename(os.path.normpath(args.base))
+    workdir = os.path.join(args.mg_dir, '%s_%s' % (base_name, MASS))
+    
     if args.step in ['lhe']:
-
-        base_name = os.path.basename(os.path.normpath(args.base))
-        workdir = os.path.join(args.mg_dir, '%s_%s' % (base_name, MASS))
         if os.path.isdir(workdir):
             print 'Dir %s already exists, skipping' % workdir
             continue
@@ -45,16 +44,32 @@ for MASS in args.mass.split(','):
 
         with open('%s/Cards/param_card.dat' % (workdir)) as param_file:
             param_cfg = param_file.read()
-
         param_cfg = param_cfg.replace('{MASS}', '%.5e' % float(MASS))
-        
         with open('%s/Cards/param_card.dat' % (workdir), "w") as outfile:
             outfile.write(param_cfg)
+        
+        with open('%s/Cards/run_card.dat' % (workdir)) as run_file:
+            run_cfg = run_file.read()
+        run_cfg = run_cfg.replace('{TOTAL_EVENTS}', '%i' % args.nevents)
+        run_cfg = run_cfg.replace('{EVENTS_PER_JOB}', '%i' % args.mg_split)
+        with open('%s/Cards/run_card.dat' % (workdir), "w") as outfile:
+            outfile.write(run_cfg)
+
+        with open('%s/Cards/amcatnlo_configuration.txt' % (workdir)) as amc_file:
+            amc_cfg = amc_file.read()
+        amc_cfg = amc_cfg.replace('{MG_PATH}', '%s' % os.path.abspath(args.mg_dir))
+        amc_cfg = amc_cfg.replace('{LHAPDF_PATH}', '%s/bin/lhapdf-config' % subprocess.check_output(['scram', 'tool tag lhapdf LHAPDF_BASE']).strip())
+        with open('%s/Cards/amcatnlo_configuration.txt' % (workdir), "w") as outfile:
+            outfile.write(amc_cfg)
+        
         base_cmd = 'cd %s' % workdir
         cmd = base_cmd
-        cmd += '; echo "3" | ./bin/generate_events --nb_core=8'
+        cmd += '; echo "3" | ./bin/generate_events --nb_core=%i' % args.cores
 
         job_mgr.job_queue.append(cmd)
+
+    if args.step in ['clean']:
+        os.system('rm -r %s/SubProcesses %s/Events/run_01/alllogs_*' % (workdir, workdir))
         
     blocks = int(ceil(float(args.nevents) / float(args.split)))
 
