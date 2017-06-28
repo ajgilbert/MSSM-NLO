@@ -2,7 +2,7 @@ from WMCore.Configuration import Configuration
 from multiprocessing import Process
 config = Configuration()
 
-PROD='lhe-prod-100517'
+PROD='lhe-prod-150517'
 
 config.section_('General')
 config.General.workArea=PROD
@@ -48,8 +48,33 @@ if __name__ == '__main__':
     #############################################################################################
 
     primary = 'SUSYGluGluToBBHToTauTau_M-%s_TuneCUETP8M1_13TeV-amcatnlo-pythia8'
+    primaryLo = 'SUSYGluGluToBBHToTauTau_M-%s_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown'
+    primaryHi = 'SUSYGluGluToBBHToTauTau_M-%s_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp'
     tasks=[
-            (primary % '700', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH/700/events.lhe', 500000, 100000)
+            #(primary % '80', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_80/events.lhe', 500000, 100000),
+            #(primary % '130', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_130/events.lhe', 500000, 100000),
+            #(primary % '200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_200/events.lhe', 500000, 100000),
+            #(primary % '350', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_350/events.lhe', 500000, 100000),
+            #(primary % '700', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_700/events.lhe', 500000, 100000),
+            #(primary % '1200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_1200/events.lhe', 500000, 100000),
+            #(primary % '1800', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_1800/events.lhe', 500000, 100000),
+            (primary % '3200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_3200/events_1.lhe,root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_3200/events_2.lhe,root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_3200/events_3.lhe,root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_3200/events_4.lhe,root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_3200/events_5.lhe', 500000, 100000),
+            #(primaryLo % '80', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_80_qshDown/events.lhe', 500000, 100000),
+            #(primaryLo % '130', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_130_qshDown/events.lhe', 500000, 100000),
+            #(primaryLo % '200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_200_qshDown/events.lhe', 500000, 100000),
+            #(primaryLo % '350', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_350_qshDown/events.lhe', 500000, 100000),
+            #(primaryLo % '700', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_700_qshDown/events.lhe', 500000, 100000),
+            #(primaryLo % '1200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_1200_qshDown/events.lhe', 500000, 100000),
+            #(primaryLo % '1800', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_1800_qshDown/events.lhe', 500000, 100000),
+            #(primaryLo % '3200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_3200_qshDown/events.lhe', 500000, 100000),
+            #(primaryHi % '80', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_80_qshUp/events.lhe', 500000, 100000),
+            #(primaryHi % '130', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_130_qshUp/events.lhe', 500000, 100000),
+            #(primaryHi % '200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_200_qshUp/events.lhe', 500000, 100000),
+            #(primaryHi % '350', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_350_qshUp/events.lhe', 500000, 100000),
+            #(primaryHi % '700', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_700_qshUp/events.lhe', 500000, 100000),
+            #(primaryHi % '1200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_1200_qshUp/events.lhe', 500000, 100000),
+            #(primaryHi % '1800', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_1800_qshUp/events.lhe', 500000, 100000),
+            #(primaryHi % '3200', 'root://dcache-cms-xrootd.desy.de//store/user/agilbert/madgraph_amcatnlo/bbH_4FS_yb2_3200_qshUp/events.lhe', 500000, 100000),
             ]
 
     for task in tasks:

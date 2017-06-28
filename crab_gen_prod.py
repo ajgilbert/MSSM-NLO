@@ -2,7 +2,7 @@ from WMCore.Configuration import Configuration
 from multiprocessing import Process
 config = Configuration()
 
-PROD='prod_010517'
+PROD='prod_290517'
 
 config.section_('General')
 config.General.workArea=PROD
@@ -89,35 +89,59 @@ if __name__ == '__main__':
             ]
 
     tasks_bbH = [
-        #('SUSYGluGluToBBHToTauTau_M-80', '/SUSYGluGluToBBHToTauTau_M-80_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-80', '/SUSYGluGluToBBHToTauTau_M-80_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-90', '/SUSYGluGluToBBHToTauTau_M-90_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-100', '/SUSYGluGluToBBHToTauTau_M-100_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-110', '/SUSYGluGluToBBHToTauTau_M-110_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-120', '/SUSYGluGluToBBHToTauTau_M-120_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        #('SUSYGluGluToBBHToTauTau_M-130', '/SUSYGluGluToBBHToTauTau_M-130_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-130', '/SUSYGluGluToBBHToTauTau_M-130_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-140', '/SUSYGluGluToBBHToTauTau_M-140_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-160', '/SUSYGluGluToBBHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-180', '/SUSYGluGluToBBHToTauTau_M-180_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        #('SUSYGluGluToBBHToTauTau_M-200', '/SUSYGluGluToBBHToTauTau_M-200_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-200', '/SUSYGluGluToBBHToTauTau_M-200_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-250', '/SUSYGluGluToBBHToTauTau_M-250_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        #('SUSYGluGluToBBHToTauTau_M-350', '/SUSYGluGluToBBHToTauTau_M-350_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-350', '/SUSYGluGluToBBHToTauTau_M-350_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-400', '/SUSYGluGluToBBHToTauTau_M-400_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-450', '/SUSYGluGluToBBHToTauTau_M-450_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-500', '/SUSYGluGluToBBHToTauTau_M-500_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        ('SUSYGluGluToBBHToTauTau_M-600', '/SUSYGluGluToBBHToTauTau_M-600_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        #('SUSYGluGluToBBHToTauTau_M-700', '/SUSYGluGluToBBHToTauTau_M-700_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        #('SUSYGluGluToBBHToTauTau_M-600', '/SUSYGluGluToBBHToTauTau_M-600_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-700', '/SUSYGluGluToBBHToTauTau_M-700_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-800', '/SUSYGluGluToBBHToTauTau_M-800_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-900', '/SUSYGluGluToBBHToTauTau_M-900_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-1000', '/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        #('SUSYGluGluToBBHToTauTau_M-1200', '/SUSYGluGluToBBHToTauTau_M-1200_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-1200', '/SUSYGluGluToBBHToTauTau_M-1200_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-1400', '/SUSYGluGluToBBHToTauTau_M-1400_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-1600', '/SUSYGluGluToBBHToTauTau_M-1600_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        #('SUSYGluGluToBBHToTauTau_M-1800', '/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-1800', '/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-2000', '/SUSYGluGluToBBHToTauTau_M-2000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
         #('SUSYGluGluToBBHToTauTau_M-2300', '/SUSYGluGluToBBHToTauTau_M-2300_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        ('SUSYGluGluToBBHToTauTau_M-2600', '/SUSYGluGluToBBHToTauTau_M-2600_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        ('SUSYGluGluToBBHToTauTau_M-2900', '/SUSYGluGluToBBHToTauTau_M-2900_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
-        #('SUSYGluGluToBBHToTauTau_M-3200', '/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        #('SUSYGluGluToBBHToTauTau_M-2600', '/SUSYGluGluToBBHToTauTau_M-2600_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        #('SUSYGluGluToBBHToTauTau_M-2900', '/SUSYGluGluToBBHToTauTau_M-2900_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-3200', '/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_cfg.py', 'global'),
+        ('SUSYGluGluToBBHToTauTau_M-80-mg', '/SUSYGluGluToBBHToTauTau_M-80_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-130-mg', '/SUSYGluGluToBBHToTauTau_M-130_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-200-mg', '/SUSYGluGluToBBHToTauTau_M-200_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-350-mg', '/SUSYGluGluToBBHToTauTau_M-350_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-700-mg', '/SUSYGluGluToBBHToTauTau_M-700_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-120-mg', '/SUSYGluGluToBBHToTauTau_M-1200_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-1800-mg', '/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-3200-mg', '/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-250517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-80-mg-qlo', '/SUSYGluGluToBBHToTauTau_M-80_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-80-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-80_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-130-mg-qlo', '/SUSYGluGluToBBHToTauTau_M-130_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-130-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-130_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-200-mg-qlo', '/SUSYGluGluToBBHToTauTau_M-200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-200-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-350-mg-qlo', '/SUSYGluGluToBBHToTauTau_M-350_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-350-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-350_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-700-mg-qlo', '/SUSYGluGluToBBHToTauTau_M-700_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-700-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-700_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-120-mg-qlo', '/SUSYGluGluToBBHToTauTau_M-1200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-120-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-1200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-1800-mg-qlo', '/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-1800-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-3200-mg-qlo', '/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-3200-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
         ]
 
     for task in tasks_bbH:

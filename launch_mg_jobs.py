@@ -5,6 +5,7 @@ import ROOT
 import json
 import subprocess
 from math import ceil
+from math import sqrt
 from array import array
 from itertools import product
 
@@ -17,8 +18,9 @@ parser.add_argument('-n', '--nevents', default=500000, type=int)
 parser.add_argument('--mg-split', default=10000, type=int)
 parser.add_argument('--cores', default=8, type=int)
 parser.add_argument('--split', default=-1, type=int)
+parser.add_argument('--qsh', default=0, type=int)
 parser.add_argument('-m', '--mass', default='500')
-parser.add_argument('--step', default='none', choices=['none', 'lhe', 'clean', 'gen', 'ntuple', 'xsec'])
+parser.add_argument('--step', default='none', choices=['none', 'lhe', 'clean', 'upload', 'gen', 'ntuple', 'xsec'])
 parser.add_argument('--upload', default=None)
 parser.add_argument('--download', default=None)
 parser.add_argument('--usetmp', action='store_true')
@@ -33,8 +35,13 @@ if args.split == -1:
 
 for MASS in args.mass.split(','):
     base_name = os.path.basename(os.path.normpath(args.base))
-    workdir = os.path.join(args.mg_dir, '%s_%s' % (base_name, MASS))
-    
+    massdir = '%s_%s' % (base_name, MASS)
+    if args.qsh == 1:
+        massdir += '_qshDown'
+    if args.qsh == 2:
+        massdir += '_qshUp'
+    workdir = os.path.join(args.mg_dir, massdir)
+
     if args.step in ['lhe']:
         if os.path.isdir(workdir):
             print 'Dir %s already exists, skipping' % workdir
@@ -62,6 +69,21 @@ for MASS in args.mass.split(','):
         with open('%s/Cards/amcatnlo_configuration.txt' % (workdir), "w") as outfile:
             outfile.write(amc_cfg)
         
+        with open('%s/SubProcesses/madfks_mcatnlo.inc' % (workdir)) as scale_file:
+            scale_cfg = scale_file.read()
+            frac_lo = 0.025
+            frac_hi = 0.25
+            if args.qsh == 1:
+                frac_lo /= sqrt(2.)
+                frac_hi /= sqrt(2.)
+            if args.qsh == 2:
+                frac_lo *= sqrt(2.)
+                frac_hi *= sqrt(2.)
+        scale_cfg = scale_cfg.replace('{FRAC_LO}', '%.3f' % frac_lo)
+        scale_cfg = scale_cfg.replace('{FRAC_HI}', '%.3f' % frac_hi)
+        with open('%s/SubProcesses/madfks_mcatnlo.inc' % (workdir), "w") as outfile:
+            outfile.write(scale_cfg)
+        
         base_cmd = 'cd %s' % workdir
         cmd = base_cmd
         cmd += '; echo "3" | ./bin/generate_events --nb_core=%i' % args.cores
@@ -70,6 +92,10 @@ for MASS in args.mass.split(','):
 
     if args.step in ['clean']:
         os.system('rm -r %s/SubProcesses %s/Events/run_01/alllogs_*' % (workdir, workdir))
+
+    if args.step in ['upload'] and args.upload is not None:
+        os.system('pushd %s/Events/run_01; gunzip -c events.lhe.gz > events.lhe; gfal-copy -f events.lhe %s/%s/events.lhe; rm events.lhe; popd' % (workdir, args.upload, massdir)) 
+        #print 'pushd %s/Events/run_01; gunzip -c events.lhe.gz > events.lhe; gfal-copy -f events.lhe %s/%s/events.lhe; rm events.lhe; popd' % (workdir, args.upload, massdir) 
         
     blocks = int(ceil(float(args.nevents) / float(args.split)))
 

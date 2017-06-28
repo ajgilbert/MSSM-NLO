@@ -25,7 +25,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 500
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-80_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/1C1B2A76-D7D1-E611-9908-C45444922BD1.root'),
+        fileNames = cms.untracked.vstring('/store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/BCDBCE42-3BC9-E611-B377-00259073E4C4.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -83,7 +83,7 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
     )
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
-    lheProducer         = cms.InputTag("externalLHEProducer"),
+    lheProducer         = cms.InputTag("source"),
     includeLHEWeights   = cms.bool(False)
     )
 
