@@ -255,8 +255,8 @@ w.importClassCode('RooSpline1D')
 
 w.Print()
 if args.mssm_mode:
-    w.writeToFile('higgs_pt_v1_mssm_mode.root')
+    w.writeToFile('higgs_pt_v2_mssm_mode.root')
 else:
-    w.writeToFile('higgs_pt_v1.root')
+    w.writeToFile('higgs_pt_v2.root')
 
 w.Delete()
