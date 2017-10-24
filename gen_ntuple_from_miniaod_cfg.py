@@ -25,7 +25,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 500
 
 # Input source
 process.source = cms.Source("PoolSource",
-        fileNames = cms.untracked.vstring('/store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/BCDBCE42-3BC9-E611-B377-00259073E4C4.root'),
+        fileNames = cms.untracked.vstring('/store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/04D63AC1-2A6B-E711-BCF9-008CFA1113DC.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -57,10 +57,11 @@ process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
         jets = cms.InputTag("slimmedGenJets") 
         )
 
-process.MessageLogger.categories += cms.vstring('JetPtMismatch', 'MissingJetConstituent', 'JetPtMismatchAtLowPt')
+process.MessageLogger.categories += cms.vstring('JetPtMismatch', 'MissingJetConstituent', 'JetPtMismatchAtLowPt', 'NullTransverseMomentum')
 process.MessageLogger.cerr.JetPtMismatch = cms.untracked.PSet(limit = cms.untracked.int32(0))
 process.MessageLogger.cerr.MissingJetConstituent = cms.untracked.PSet(limit = cms.untracked.int32(0))
 process.MessageLogger.cerr.JetPtMismatchAtLowPt = cms.untracked.PSet(limit = cms.untracked.int32(0))
+process.MessageLogger.cerr.NullTransverseMomentum = cms.untracked.PSet(limit = cms.untracked.int32(0))
 
 process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
     src = cms.InputTag("slimmedGenJets"),

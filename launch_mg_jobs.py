@@ -20,14 +20,22 @@ parser.add_argument('--cores', default=8, type=int)
 parser.add_argument('--split', default=-1, type=int)
 parser.add_argument('--qsh', default=0, type=int)
 parser.add_argument('-m', '--mass', default='500')
-parser.add_argument('--step', default='none', choices=['none', 'lhe', 'clean', 'upload', 'gen', 'ntuple', 'xsec'])
+parser.add_argument('--step', default='none', choices=['none', 'lhe', 'clean', 'upload', 'gen', 'ntuple', 'xsec', 'gridpack'])
 parser.add_argument('--upload', default=None)
+parser.add_argument('--gp-name', default='SUSYGluGluToBBHToTauTau_M-')
 parser.add_argument('--download', default=None)
 parser.add_argument('--usetmp', action='store_true')
+parser.add_argument('--seed', default=0, type=int)
+parser.add_argument('--postfix', default='')
+parser.add_argument('--req-acc', default=-1.0, type=float)
 
 job_mgr.attach_job_args(parser)
 args = parser.parse_args()
 job_mgr.set_args(args)
+
+def run_cmd(arg):
+    print arg
+    os.system(arg)
 
 if args.split == -1:
     args.split = args.nevents
@@ -35,7 +43,7 @@ if args.split == -1:
 
 for MASS in args.mass.split(','):
     base_name = os.path.basename(os.path.normpath(args.base))
-    massdir = '%s_%s' % (base_name, MASS)
+    massdir = '%s_%s%s' % (base_name, MASS, args.postfix)
     if args.qsh == 1:
         massdir += '_qshDown'
     if args.qsh == 2:
@@ -59,6 +67,8 @@ for MASS in args.mass.split(','):
             run_cfg = run_file.read()
         run_cfg = run_cfg.replace('{TOTAL_EVENTS}', '%i' % args.nevents)
         run_cfg = run_cfg.replace('{EVENTS_PER_JOB}', '%i' % args.mg_split)
+        run_cfg = run_cfg.replace('{REQ_ACC}', '%g' % args.req_acc)
+        run_cfg = run_cfg.replace('{SEED}', '%i' % args.seed)
         with open('%s/Cards/run_card.dat' % (workdir), "w") as outfile:
             outfile.write(run_cfg)
 
@@ -89,6 +99,18 @@ for MASS in args.mass.split(','):
         cmd += '; echo "3" | ./bin/generate_events --nb_core=%i' % args.cores
 
         job_mgr.job_queue.append(cmd)
+    
+    if args.step in ['gridpack']:
+        gp_name = '%s%s' % (args.gp_name, MASS) 
+        run_cmd('mkdir gridpack_%s' % gp_name)
+        run_cmd('cp -a  %s gridpack_%s/process' % (workdir, gp_name))
+        run_cmd('echo "mg5_path = ../mgbasedir" >> gridpack_%s/process/Cards/amcatnlo_configuration.txt' % (gp_name))
+        run_cmd('cp -a %s_ref gridpack_%s/mgbasedir' % (args.mg_dir, gp_name))
+        run_cmd('cp runcmsgrid_NLO.sh gridpack_%s/runcmsgrid.sh' % (gp_name))
+        run_cmd('cd gridpack_%s; ../cleangridmore.sh; cd ..' % (gp_name))
+        run_cmd('cd gridpack_%s; XZ_OPT="--lzma2=preset=9,dict=512MiB" tar -cJpsf ../%s_tarball.tar.xz mgbasedir process runcmsgrid.sh; cd ..' % (gp_name, gp_name))
+
+        
 
     if args.step in ['clean']:
         os.system('rm -r %s/SubProcesses %s/Events/run_01/alllogs_*' % (workdir, workdir))
@@ -97,35 +119,5 @@ for MASS in args.mass.split(','):
         os.system('pushd %s/Events/run_01; gunzip -c events.lhe.gz > events.lhe; gfal-copy -f events.lhe %s/%s/events.lhe; rm events.lhe; popd' % (workdir, args.upload, massdir)) 
         #print 'pushd %s/Events/run_01; gunzip -c events.lhe.gz > events.lhe; gfal-copy -f events.lhe %s/%s/events.lhe; rm events.lhe; popd' % (workdir, args.upload, massdir) 
         
-    blocks = int(ceil(float(args.nevents) / float(args.split)))
-
-    if args.step in ['gen', 'ntuple']:
-        key = 'bbH_%s' % (MASS)
-
-        for b in xrange(blocks):
-            outdir = '$PWD/'+key
-            if args.step == 'gen':
-                if args.usetmp:
-                    outdir = '$TMPDIR'
-                cmd = 'cmsRun fromEDM2GEN_madgraph_amcatnlo.py input=%s/lhe_events.root output=%s/gen_events_%i.root seed=%i events=%i offset=%i mass=%f higgs=%s' % (key, outdir, b, b, args.split, args.split*b, float(MASS), '25')
-                if args.upload is not None:
-                    cmd += '; gfal-copy -f file://%s/gen_events_%i.root %s/%s/gen_events_%i.root' % (outdir, b, args.upload, key, b)
-                    cmd += '; rm %s/gen_events_%i.root' % (outdir, b)
-                job_mgr.job_queue.append(cmd)
-            if args.step == 'ntuple':
-                indir = outdir
-                if args.download is not None:
-                    indir = args.download + '/' + key
-                cmd = 'cmsRun gen_ntuple_from_gen_cfg.py input=%s/gen_events_%i.root output=%s/EventTree_%i.root' % (indir, b, outdir, b)
-                # Write the filelist if this is the first job
-                if b == 0:
-                    cmd += '; echo -e "'
-                    files = [ ]
-                    for bi in range(blocks):
-                        files.append('%s/EventTree_%i.root' % (key, bi))
-                    cmd += '\\n'.join(files)
-                    cmd += '" &> %s.dat' % key
-                job_mgr.job_queue.append(cmd)
-    
 job_mgr.flush_queue()
 

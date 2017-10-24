@@ -2,7 +2,7 @@ from WMCore.Configuration import Configuration
 from multiprocessing import Process
 config = Configuration()
 
-PROD='prod_290517'
+PROD='prod_040817'
 
 config.section_('General')
 config.General.workArea=PROD
@@ -24,15 +24,14 @@ config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 #config.Data.runRange = '271036-274240'
 config.Data.ignoreLocality=False
-config.Data.outLFNDirBase='/store/user/agilbert/%s' % PROD
+config.Data.outLFNDirBase='/store/group/cmst3/user/agilbert/%s' % PROD
 config.Data.inputDBS = 'global'
 
 config.section_('User')
 config.User.voGroup = 'dcms'
 
-
 config.section_('Site')
-config.Site.storageSite = 'T2_DE_DESY'
+config.Site.storageSite = 'T2_CH_CERN'
 config.Site.blacklist = ['T1_FR_CCIN2P3']
 
 if __name__ == '__main__':
@@ -144,7 +143,12 @@ if __name__ == '__main__':
         ('SUSYGluGluToBBHToTauTau_M-3200-mg-qhi', '/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
         ]
 
-    for task in tasks_bbH:
+    tasks_new = [
+        ('SUSYGluGluToBBHToTauTau_M-1800-private', '/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER', 'gen_ntuple_from_miniaod_mg_cfg.py', 'phys03'),
+        ('SUSYGluGluToBBHToTauTau_M-1800-official', '/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 'gen_ntuple_from_miniaod_mg_cfg.py', 'global'),
+    ]
+
+    for task in tasks_new:
         #print task
         #continue
         print task[0]

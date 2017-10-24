@@ -160,6 +160,8 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
     isSlimmed           = cms.bool(False)
     )
 
+process.icGenParticleFromLHEParticlesProducer = producers.icGenParticleFromLHEParticlesProducer.clone()
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     lheProducer         = cms.InputTag("externalLHEProducer"),
     includeLHEWeights   = cms.bool(False)
@@ -168,12 +170,13 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventProducer = producers.icEventProducer.clone()
 
 process.p = cms.Path(
-   process.selectedHadronsAndPartons+
-   process.genJetFlavourInfos+
-   process.icGenJetFlavourCalculator+
-   process.icGenParticleProducer+
-   process.selectedGenJets+
-   process.icGenJetProducer+
+   #process.selectedHadronsAndPartons+
+   #process.genJetFlavourInfos+
+   #process.icGenJetFlavourCalculator+
+   #process.icGenParticleProducer+
+   #process.selectedGenJets+
+   #process.icGenJetProducer+
+   process.icGenParticleFromLHEParticlesProducer+
    process.icEventInfoProducer+
    process.icEventProducer
 )
@@ -187,31 +190,3 @@ process.schedule = cms.Schedule(process.p)
 
 # customisation of the process.
 
-# Automatic addition of the customisation function from Configuration.DataProcessing.Utils
-from Configuration.DataProcessing.Utils import addMonitoring 
-
-#call to customisation function addMonitoring imported from Configuration.DataProcessing.Utils
-process = addMonitoring(process)
-
-# End of customisation functions
-#do not add changes to your config after this point (unless you know what you are doing)
-#from FWCore.ParameterSet.Utilities import convertToUnscheduled
-#process=convertToUnscheduled(process)
-process.load('Configuration.StandardSequences.PATMC_cff')
-process.load('PhysicsTools.HepMCCandAlgos.genParticles_cfi')
-process.load('RecoJets.Configuration.GenJetParticles_cff')
-process.load('RecoJets.Configuration.RecoGenJets_cff')
-
-process.genParticles.src = cms.InputTag("generator")
-#from FWCore.ParameterSet.Utilities import cleanUnscheduled
-#process=cleanUnscheduled(process)
-
-# customisation of the process.
-
-# Automatic addition of the customisation function from PhysicsTools.PatAlgos.slimming.miniAOD_tools
-from PhysicsTools.PatAlgos.slimming.miniAOD_tools import miniAOD_customizeAllMC 
-
-#call to customisation function miniAOD_customizeAllMC imported from PhysicsTools.PatAlgos.slimming.miniAOD_tools
-process = miniAOD_customizeAllMC(process)
-
-# End of customisation functions
